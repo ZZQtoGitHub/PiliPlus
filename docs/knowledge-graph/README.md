@@ -20,7 +20,7 @@
 
 | 指标 | 数值 |
 | --- | --- |
-| 分析文件 | **53**（50 个 Dart + 2 个配置 + 1 个文档），共 11,515 行 |
+| 分析文件 | **53**（50 个 Dart + 2 个配置 + 1 个文档），共 12,143 行 |
 | 节点 | **193**（file 50 / class 66 / function 74 / config 2 / document 1） |
 | 边 | **300**（contains 140 / depends_on 132 / calls 11 / inherits 6 / configures 5 / related 4 / documents 2） |
 | 架构分层 | **10** |
@@ -88,16 +88,16 @@ npx https://github.com/Egonex-AI/Understand-Anything/releases/latest/download/un
 
 ```bash
 # 在支持子代理的 Agent 会话中执行
-/understand-anything -diff
+/understand-diff
 ```
 
-**全量重新分析**：重新执行 `/understand-anything`，然后用新产物覆盖本目录。
+**全量重新分析**：重新执行 `/understand`，然后用新产物覆盖本目录。
 
 改动较大的话，建议同步更新 [`docs/DEVELOPER_ROADMAP.md`](../DEVELOPER_ROADMAP.md)，避免两处描述不一致。
 
 ## 已知限制
 
-**1. Dart 的依赖边是补算出来的。** Understand-Anything 官方的 `extract-import-map` 支持 13 种语言做确定性 import 解析，**Dart 不在其中且无 LLM 兜底**，实测返回 `filesWithImports=0, totalEdges=0`。本图谱没有伪造数据，而是自行解析 Dart 的 `import` 声明补出 **129 条真实内部依赖**，以 `depends_on` 形式写入。结构抽取（tree-sitter-dart）本身工作正常。
+**1. Dart 的依赖边是补算出来的。** Understand-Anything 官方的 `extract-import-map` 支持 13 种语言做确定性 import 解析，**Dart 不在其中且无 LLM 兜底**，实测返回 `filesWithImports=0, totalEdges=0`。本图谱没有伪造数据，而是自行解析 Dart 的 `import` 声明补出真实内部依赖，以 `depends_on` 形式写入，共 **132 条**（其中 130 条为 Dart 文件之间的 import 依赖，另 2 条为 function → class 依赖）。结构抽取（tree-sitter-dart）本身工作正常。
 
 **2. 分析范围是人工挑选的。** 覆盖 53/1492 个文件（你可以在导览里看到具体是哪些）。这意味着本图谱能可靠回答「主干模块之间如何协作」，但**不能**用来回答「某个边角功能在哪实现」。
 
